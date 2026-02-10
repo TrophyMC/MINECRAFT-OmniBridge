@@ -1,6 +1,8 @@
 package de.mecrytv.omniBridge;
 
 import com.google.inject.Inject;
+import com.velocitypowered.api.command.CommandManager;
+import com.velocitypowered.api.command.SimpleCommand;
 import com.velocitypowered.api.event.proxy.ProxyInitializeEvent;
 import com.velocitypowered.api.event.Subscribe;
 import com.velocitypowered.api.plugin.Plugin;
@@ -10,6 +12,7 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import de.mecrytv.databaseapi.DatabaseAPI;
 import de.mecrytv.databaseapi.utils.DatabaseConfig;
 import de.mecrytv.languageapi.LanguageAPI;
+import de.mecrytv.omniBridge.events.AntiVPNListener;
 import de.mecrytv.omniBridge.manager.ConfigManager;
 import de.mecrytv.omniBridge.models.VPNModel;
 import de.mecrytv.omniBridge.utils.LogWithColor;
@@ -71,6 +74,8 @@ public class OmniBridge {
         server.getChannelRegistrar().register(IDENTIFIER);
 
         databaseAPI.registerModel("vpn", VPNModel::new);
+
+        registerListener(new AntiVPNListener());
     }
 
     private void startLog(){
@@ -90,6 +95,18 @@ public class OmniBridge {
         }
         logger.info(LogWithColor.color("Developed by MecryTv", LogWithColor.GOLD));
         logger.info(LogWithColor.color("Plugin has been enabled!", LogWithColor.GREEN));
+    }
+    private void registerCommand(SimpleCommand command, String label, String... aliases) {
+        CommandManager commandManager = server.getCommandManager();
+        commandManager.register(
+                commandManager.metaBuilder(label)
+                        .aliases(aliases)
+                        .build(),
+                command
+        );
+    }
+    private void registerListener(Object listener) {
+        server.getEventManager().register(this, listener);
     }
 
     public static OmniBridge getInstance() {
