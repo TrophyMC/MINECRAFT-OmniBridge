@@ -16,6 +16,12 @@ public class AntiVPNUtil {
 
     public static CompletableFuture<Boolean> isVPN(String ip){
         String apiKey = OmniBridge.getInstance().getConfig().getString("vpnAPIKey");
+
+        if (apiKey == null || apiKey.isEmpty()) {
+            OmniBridge.getInstance().getLogger().error("VPN API key is not set in the config. Please set 'vpnAPIKey' to use the VPN check feature.");
+            return CompletableFuture.completedFuture(false);
+        }
+
         String url = "https://proxycheck.io/v2/" + ip + "?key=" + apiKey + "&vpn=1";
 
         if (apiKey.isEmpty()) return CompletableFuture.completedFuture(false);
