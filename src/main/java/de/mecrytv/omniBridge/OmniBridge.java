@@ -11,10 +11,10 @@ import de.mecrytv.databaseapi.DatabaseAPI;
 import de.mecrytv.databaseapi.utils.DatabaseConfig;
 import de.mecrytv.languageapi.LanguageAPI;
 import de.mecrytv.omniBridge.manager.ConfigManager;
+import de.mecrytv.omniBridge.models.VPNModel;
 import de.mecrytv.omniBridge.utils.LogWithColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.apache.commons.logging.Log;
 import org.slf4j.Logger;
 
 import java.nio.file.Path;
@@ -69,6 +69,8 @@ public class OmniBridge {
 
         this.databaseAPI = new DatabaseAPI(dbConfig);
         server.getChannelRegistrar().register(IDENTIFIER);
+
+        databaseAPI.registerModel("vpn", VPNModel::new);
     }
 
     private void startLog(){
