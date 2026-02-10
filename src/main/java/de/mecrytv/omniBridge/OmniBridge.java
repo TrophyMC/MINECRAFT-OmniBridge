@@ -12,9 +12,12 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import de.mecrytv.databaseapi.DatabaseAPI;
 import de.mecrytv.databaseapi.utils.DatabaseConfig;
 import de.mecrytv.languageapi.LanguageAPI;
+import de.mecrytv.omniBridge.commands.WhitelistCommand;
 import de.mecrytv.omniBridge.events.AntiVPNListener;
 import de.mecrytv.omniBridge.manager.ConfigManager;
+import de.mecrytv.omniBridge.manager.WhitelistManager;
 import de.mecrytv.omniBridge.models.VPNModel;
+import de.mecrytv.omniBridge.models.WhitelistModel;
 import de.mecrytv.omniBridge.utils.LogWithColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -40,6 +43,8 @@ public class OmniBridge {
     private ConfigManager modt;
     private DatabaseAPI databaseAPI;
     private LanguageAPI languageAPI;
+    private WhitelistManager whitelistManager;
+
     public static final MinecraftChannelIdentifier IDENTIFIER = MinecraftChannelIdentifier.from("omni:bridge");
 
     @Inject
@@ -74,8 +79,13 @@ public class OmniBridge {
         server.getChannelRegistrar().register(IDENTIFIER);
 
         databaseAPI.registerModel("vpn", VPNModel::new);
+        databaseAPI.registerModel("whitelist", WhitelistModel::new);
+
+        whitelistManager = new WhitelistManager(this);
 
         registerListener(new AntiVPNListener());
+
+        registerCommand(new WhitelistCommand(), "whitelist", "wl");
     }
 
     private void startLog(){
@@ -145,5 +155,8 @@ public class OmniBridge {
     }
     public LanguageAPI getLanguageAPI() {
         return languageAPI;
+    }
+    public WhitelistManager getWhitelistManager() {
+        return whitelistManager;
     }
 }
