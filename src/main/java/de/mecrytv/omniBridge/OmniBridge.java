@@ -14,8 +14,7 @@ import de.mecrytv.databaseapi.utils.DatabaseConfig;
 import de.mecrytv.languageapi.LanguageAPI;
 import de.mecrytv.omniBridge.commands.MaintenanceCommand;
 import de.mecrytv.omniBridge.commands.WhitelistCommand;
-import de.mecrytv.omniBridge.events.AntiVPNListener;
-import de.mecrytv.omniBridge.events.ConnectionListener;
+import de.mecrytv.omniBridge.events.*;
 import de.mecrytv.omniBridge.manager.AntiBotManager;
 import de.mecrytv.omniBridge.manager.ConfigManager;
 import de.mecrytv.omniBridge.manager.MaintenanceManager;
@@ -94,8 +93,14 @@ public class OmniBridge {
         maintenanceManager = new MaintenanceManager(this);
         antiBotManager = new AntiBotManager(this);
 
+        maintenanceManager.load();
+        maintenanceManager.startSyncTask();
+
         registerListener(new AntiVPNListener());
         registerListener(new ConnectionListener());
+        registerListener(new ModtListener());
+        registerListener(new AntiBotListener());
+        registerListener(new AntiAltListener());
 
         registerCommand(new WhitelistCommand(), "whitelist", "wl");
         registerCommand(new MaintenanceCommand(), "maintenance");
