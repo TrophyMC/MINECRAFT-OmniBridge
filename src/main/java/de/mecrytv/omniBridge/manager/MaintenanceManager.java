@@ -41,4 +41,8 @@ public class MaintenanceManager {
     public void invalidateCache() {
         this.lastMaintenanceMode.set(0);
     }
+
+    public boolean isMaintenanceActiveSync() {
+        return this.cachedMaintenanceMode;
+    }
 }
