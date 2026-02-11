@@ -5,6 +5,7 @@ import de.mecrytv.omniBridge.OmniBridge;
 import de.mecrytv.omniBridge.models.MaintenanceModel;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
 public class MaintenanceManager {
@@ -16,6 +17,21 @@ public class MaintenanceManager {
 
     public MaintenanceManager(OmniBridge plugin) {
         this.plugin = plugin;
+    }
+
+    public void load() {
+        DatabaseAPI.<MaintenanceModel>get("maintenance", "maintenance_mode").thenAccept(result -> {
+            if (result != null) {
+                this.cachedMaintenanceMode = result.isMaintenanceMode();
+                plugin.getLogger().info("Maintenance status loaded: " + (cachedMaintenanceMode ? "ON" : "OFF"));
+            }
+        });
+    }
+
+    public void startSyncTask() {
+        plugin.getServer().getScheduler().buildTask(plugin, this::load)
+                .repeat(5, TimeUnit.MINUTES)
+                .schedule();
     }
 
     public CompletableFuture<Boolean> isMaintenanceActive() {
@@ -38,11 +54,11 @@ public class MaintenanceManager {
         });
     }
 
-    public void invalidateCache() {
-        this.lastMaintenanceMode.set(0);
-    }
-
     public boolean isMaintenanceActiveSync() {
         return this.cachedMaintenanceMode;
+    }
+
+    public void setCachedMaintenanceMode(boolean status) {
+        this.cachedMaintenanceMode = status;
     }
 }
