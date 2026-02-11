@@ -12,6 +12,7 @@ import com.velocitypowered.api.proxy.messages.MinecraftChannelIdentifier;
 import de.mecrytv.databaseapi.DatabaseAPI;
 import de.mecrytv.databaseapi.utils.DatabaseConfig;
 import de.mecrytv.languageapi.LanguageAPI;
+import de.mecrytv.omniBridge.commands.MaintenanceCommand;
 import de.mecrytv.omniBridge.commands.WhitelistCommand;
 import de.mecrytv.omniBridge.events.AntiVPNListener;
 import de.mecrytv.omniBridge.manager.ConfigManager;
@@ -81,13 +82,14 @@ public class OmniBridge {
 
         databaseAPI.registerModel("vpn", VPNModel::new);
         databaseAPI.registerModel("whitelist", WhitelistModel::new);
-        databaseAPI.registerModel("Maintenance", MaintenanceModel::new);
+        databaseAPI.registerModel("maintenance", MaintenanceModel::new);
 
         whitelistManager = new WhitelistManager(this);
 
         registerListener(new AntiVPNListener());
 
         registerCommand(new WhitelistCommand(), "whitelist", "wl");
+        registerCommand(new MaintenanceCommand(), "maintenance");
     }
 
     private void startLog(){
