@@ -11,6 +11,7 @@ import de.mecrytv.omniBridge.utils.TranslationUtils;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 public class WhitelistCommand implements SimpleCommand {
@@ -27,63 +28,56 @@ public class WhitelistCommand implements SimpleCommand {
             return;
         }
 
-        Player player = (Player) source;
-
-        if (!player.hasPermission("omni.whitelist")) {
-            TranslationUtils.sendTranslation(player, "commands.whitelist.no_permission");
+        if (!source.hasPermission("omni.whitelist")) {
+            TranslationUtils.sendTranslation(source, "commands.whitelist.no_permission");
             return;
         }
 
         if (args.length == 0) {
-            List.of("header", "add", "remove", "info").forEach(key -> {
-                TranslationUtils.sendTranslation(source, "commands.whitelist.usage." + key);
-            });
+            sendUsage(source);
+            return;
         }
 
-        String action = args[0].toLowerCase();
-
-        switch (action) {
-            case "add":
-                if (args.length < 2) {
-                    TranslationUtils.sendTranslation(source, "commands.whitelist.usage");
-                    return;
-                }
-
-                String playerNameToAdd = args[1];
-                GeneralUtils.getOfflinePlayerID(playerNameToAdd).thenAccept(playerUUID -> {
-                    if (playerUUID == null) {
-                        TranslationUtils.sendTranslation(source, "commands.whitelist.player_not_found", "{player}", playerNameToAdd);
-                        return;
-                    }
-
-                    whitelistManager.addToWhitelist(source, playerUUID, playerNameToAdd);
-                });
-                break;
-            case "remove":
-                if (args.length < 2) {
-                    TranslationUtils.sendTranslation(source, "commands.whitelist.usage");
-                    return;
-                }
-
-                String playerNameToRemove = args[1];
-                GeneralUtils.getOfflinePlayerID(playerNameToRemove).thenAccept(playerUUID -> {
-                    if (playerUUID == null) {
-                        TranslationUtils.sendTranslation(source, "commands.whitelist.player_not_found", "{player}", playerNameToRemove);
-                        return;
-                    }
-
-                    whitelistManager.removeFromWhitelist(source, playerUUID, playerNameToRemove);
-                });
-                break;
-            case "info":
-                whitelistManager.getWhitelistInfo(source);
-                break;
-            default:
-                List.of("header", "add", "remove", "info").forEach(key -> {
-                    TranslationUtils.sendTranslation(source, "commands.whitelist.usage." + key);
-                });
-                break;
+        switch (args[0].toLowerCase()) {
+            case "add" -> handleAdd(source, args);
+            case "remove" -> handleRemove(source, args);
+            case "info" -> handleInfo(source);
+            default -> sendUsage(source);
         }
+    }
+
+    private void sendUsage(CommandSource source){
+        List.of("header", "add", "remove", "info").forEach(key -> {
+            TranslationUtils.sendTranslation(source, "commands.whitelist.usage." + key);
+        });
+    }
+    private void handleInfo(CommandSource source){
+        whitelistManager.getWhitelistInfo(source);
+    }
+    private void handleAdd(CommandSource source, String[] args) {
+        processPlayerAction(source, args, (uuid, name) ->
+                whitelistManager.addToWhitelist(source, uuid, name));
+    }
+    private void handleRemove(CommandSource source, String[] args) {
+        processPlayerAction(source, args, (uuid, name) ->
+                whitelistManager.removeFromWhitelist(source, uuid, name));
+    }
+
+    private void processPlayerAction(CommandSource source, String[] args, BiConsumer<String, String> action){
+        if (args.length < 2) {
+            sendUsage(source);
+            return;
+        }
+
+        String playerName = args[1];
+        GeneralUtils.getOfflinePlayerID(playerName).thenAccept(playerUUID -> {
+            if (playerUUID == null) {
+                TranslationUtils.sendTranslation(source, "commands.whitelist.player_not_found", "{player}", playerName);
+                return;
+            }
+
+            action.accept(playerUUID, playerName);
+        });
     }
 
     @Override
