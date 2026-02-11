@@ -16,6 +16,7 @@ import de.mecrytv.omniBridge.commands.WhitelistCommand;
 import de.mecrytv.omniBridge.events.AntiVPNListener;
 import de.mecrytv.omniBridge.manager.ConfigManager;
 import de.mecrytv.omniBridge.manager.WhitelistManager;
+import de.mecrytv.omniBridge.models.MaintenanceModel;
 import de.mecrytv.omniBridge.models.VPNModel;
 import de.mecrytv.omniBridge.models.WhitelistModel;
 import de.mecrytv.omniBridge.utils.LogWithColor;
@@ -80,6 +81,7 @@ public class OmniBridge {
 
         databaseAPI.registerModel("vpn", VPNModel::new);
         databaseAPI.registerModel("whitelist", WhitelistModel::new);
+        databaseAPI.registerModel("Maintenance", MaintenanceModel::new);
 
         whitelistManager = new WhitelistManager(this);
 
