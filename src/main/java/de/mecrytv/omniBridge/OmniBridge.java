@@ -19,6 +19,7 @@ import de.mecrytv.omniBridge.events.ConnectionListener;
 import de.mecrytv.omniBridge.manager.ConfigManager;
 import de.mecrytv.omniBridge.manager.MaintenanceManager;
 import de.mecrytv.omniBridge.manager.WhitelistManager;
+import de.mecrytv.omniBridge.models.AltAccountModel;
 import de.mecrytv.omniBridge.models.MaintenanceModel;
 import de.mecrytv.omniBridge.models.VPNModel;
 import de.mecrytv.omniBridge.models.WhitelistModel;
@@ -87,6 +88,7 @@ public class OmniBridge {
         databaseAPI.registerModel("vpn", VPNModel::new);
         databaseAPI.registerModel("whitelist", WhitelistModel::new);
         databaseAPI.registerModel("maintenance", MaintenanceModel::new);
+        databaseAPI.registerModel("altaccount", AltAccountModel::new);
 
         whitelistManager = new WhitelistManager(this);
         maintenanceManager = new MaintenanceManager(this);
