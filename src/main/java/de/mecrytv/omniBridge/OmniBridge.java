@@ -15,7 +15,9 @@ import de.mecrytv.languageapi.LanguageAPI;
 import de.mecrytv.omniBridge.commands.MaintenanceCommand;
 import de.mecrytv.omniBridge.commands.WhitelistCommand;
 import de.mecrytv.omniBridge.events.AntiVPNListener;
+import de.mecrytv.omniBridge.events.ConnectionListener;
 import de.mecrytv.omniBridge.manager.ConfigManager;
+import de.mecrytv.omniBridge.manager.MaintenanceManager;
 import de.mecrytv.omniBridge.manager.WhitelistManager;
 import de.mecrytv.omniBridge.models.MaintenanceModel;
 import de.mecrytv.omniBridge.models.VPNModel;
@@ -45,7 +47,9 @@ public class OmniBridge {
     private ConfigManager modt;
     private DatabaseAPI databaseAPI;
     private LanguageAPI languageAPI;
+
     private WhitelistManager whitelistManager;
+    private MaintenanceManager maintenanceManager;
 
     public static final MinecraftChannelIdentifier IDENTIFIER = MinecraftChannelIdentifier.from("omni:bridge");
 
@@ -85,8 +89,10 @@ public class OmniBridge {
         databaseAPI.registerModel("maintenance", MaintenanceModel::new);
 
         whitelistManager = new WhitelistManager(this);
+        maintenanceManager = new MaintenanceManager(this);
 
         registerListener(new AntiVPNListener());
+        registerListener(new ConnectionListener());
 
         registerCommand(new WhitelistCommand(), "whitelist", "wl");
         registerCommand(new MaintenanceCommand(), "maintenance");
@@ -162,5 +168,8 @@ public class OmniBridge {
     }
     public WhitelistManager getWhitelistManager() {
         return whitelistManager;
+    }
+    public MaintenanceManager getMaintenanceManager() {
+        return maintenanceManager;
     }
 }

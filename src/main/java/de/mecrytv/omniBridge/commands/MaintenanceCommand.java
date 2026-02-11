@@ -73,6 +73,7 @@ public class MaintenanceCommand implements SimpleCommand {
             );
 
             DatabaseAPI.set("maintenance", newModel);
+            OmniBridge.getInstance().getMaintenanceManager().invalidateCache();
 
             String successKey = targetState ? "activated" : "deactivated";
             kickAllPlayers(targetState);
