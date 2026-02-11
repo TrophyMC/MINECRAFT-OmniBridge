@@ -16,13 +16,11 @@ import de.mecrytv.omniBridge.commands.MaintenanceCommand;
 import de.mecrytv.omniBridge.commands.WhitelistCommand;
 import de.mecrytv.omniBridge.events.AntiVPNListener;
 import de.mecrytv.omniBridge.events.ConnectionListener;
+import de.mecrytv.omniBridge.manager.AntiBotManager;
 import de.mecrytv.omniBridge.manager.ConfigManager;
 import de.mecrytv.omniBridge.manager.MaintenanceManager;
 import de.mecrytv.omniBridge.manager.WhitelistManager;
-import de.mecrytv.omniBridge.models.AltAccountModel;
-import de.mecrytv.omniBridge.models.MaintenanceModel;
-import de.mecrytv.omniBridge.models.VPNModel;
-import de.mecrytv.omniBridge.models.WhitelistModel;
+import de.mecrytv.omniBridge.models.*;
 import de.mecrytv.omniBridge.utils.LogWithColor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -51,6 +49,7 @@ public class OmniBridge {
 
     private WhitelistManager whitelistManager;
     private MaintenanceManager maintenanceManager;
+    private AntiBotManager antiBotManager;
 
     public static final MinecraftChannelIdentifier IDENTIFIER = MinecraftChannelIdentifier.from("omni:bridge");
 
@@ -89,9 +88,11 @@ public class OmniBridge {
         databaseAPI.registerModel("whitelist", WhitelistModel::new);
         databaseAPI.registerModel("maintenance", MaintenanceModel::new);
         databaseAPI.registerModel("altaccount", AltAccountModel::new);
+        databaseAPI.registerModel("antibot", AntiBotModel::new);
 
         whitelistManager = new WhitelistManager(this);
         maintenanceManager = new MaintenanceManager(this);
+        antiBotManager = new AntiBotManager(this);
 
         registerListener(new AntiVPNListener());
         registerListener(new ConnectionListener());
@@ -173,5 +174,8 @@ public class OmniBridge {
     }
     public MaintenanceManager getMaintenanceManager() {
         return maintenanceManager;
+    }
+    public AntiBotManager getAntiBotManager() {
+        return antiBotManager;
     }
 }
