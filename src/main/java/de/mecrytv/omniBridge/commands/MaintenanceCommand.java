@@ -11,9 +11,11 @@ import de.mecrytv.omniBridge.utils.TranslationUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.title.Title;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class MaintenanceCommand implements SimpleCommand {
 
@@ -23,12 +25,12 @@ public class MaintenanceCommand implements SimpleCommand {
         String[] args = invocation.arguments();
 
         if (!GeneralUtils.isPlayer(source)) {
-            TranslationUtils.sendTranslation(source, "commands.maintenance.only_players");
+            TranslationUtils.sendTranslation(source, "commands.only_players");
             return;
         }
 
         if (!source.hasPermission("omni.maintenance")) {
-            TranslationUtils.sendTranslation(source, "commands.maintenance.no_permission");
+            TranslationUtils.sendTranslation(source, "commands.no_permission");
             return;
         }
 
@@ -91,18 +93,29 @@ public class MaintenanceCommand implements SimpleCommand {
 
             if (secondsLeft > 0) {
                 for (Player player : server.getAllPlayers()) {
-                    Component main = TranslationUtils.getComponentTranslation(player, "commands.maintenance.kick_title", "{seconds}", String.valueOf(secondsLeft));
-                    Component sub = TranslationUtils.getComponentTranslation(player, "commands.maintenance.kick_subtitle");
+                    Component main = TranslationUtils.getComponentTranslation(player, "commands.maintenance.kick.title");
+                    Component sub = TranslationUtils.getComponentTranslation(player, "commands.maintenance.kick.subtitle", "{seconds}", String.valueOf(secondsLeft));
                     player.showTitle(Title.title(main, sub));
                 }
             } else {
                 for (Player player : server.getAllPlayers()) {
                     if (!player.hasPermission("omni.maintenance.bypass")) {
-                        player.disconnect(TranslationUtils.getComponentTranslation(player, "commands.maintenance.kick_message"));
+                        player.disconnect(TranslationUtils.getComponentTranslation(player, "commands.maintenance.kick.message"));
                     }
                 }
                 scheduledTask.cancel();
             }
         }).repeat(1, TimeUnit.SECONDS).schedule();
+    }
+
+    @Override
+    public List<String> suggest(Invocation invocation) {
+        String[] args = invocation.arguments();
+        if (args.length <= 1) {
+            String search = (args.length == 1) ? args[0].toLowerCase() : "";
+            return List.of("on", "off").stream()
+                    .filter(s -> s.startsWith(search)).collect(Collectors.toList());
+        }
+        return new ArrayList<>();
     }
 }

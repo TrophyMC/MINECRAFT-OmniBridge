@@ -23,7 +23,7 @@ public class AntiVPNListener {
         }
 
         String ipAddress = player.getRemoteAddress().getAddress().getHostAddress();
-        Component kickMessage = TranslationUtils.getComponentTranslation(player, "listeners.antivpn.kick");
+        Component kickMessage = TranslationUtils.getComponentTranslation(player, "listeners.antivpn");
 
         DatabaseAPI.<VPNModel>get("vpn", ipAddress).thenAccept(result -> {
             if (result != null) {

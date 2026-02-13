@@ -25,7 +25,7 @@ public class WhitelistManager {
     public void addToWhitelist(CommandSource source, String playerUUID, String playerName) {
         DatabaseAPI.<WhitelistModel>get("whitelist", playerUUID).thenAccept(isWhitelisted -> {
             if (isWhitelisted != null) {
-                TranslationUtils.sendTranslation(source, "commands.whitelist.already_whitelisted", "{player}", playerName);
+                TranslationUtils.sendTranslation(source, "commands.whitelist.already_whitelisted", "{playerName}", playerName);
                 return;
             }
 
@@ -44,19 +44,19 @@ public class WhitelistManager {
     public void removeFromWhitelist(CommandSource source, String playerUUID, String playerName) {
         DatabaseAPI.<WhitelistModel>get("whitelist", playerUUID).thenAccept(isWhitelisted -> {
             if (isWhitelisted == null) {
-                TranslationUtils.sendTranslation(source, "commands.whitelist.not_whitelisted", "{player}", playerName);
+                TranslationUtils.sendTranslation(source, "commands.whitelist.not_whitelisted", "{playerName}", playerName);
                 return;
             }
 
             DatabaseAPI.delete("whitelist", playerUUID);
-            TranslationUtils.sendTranslation(source, "commands.whitelist.removed", "{player}", playerName);
+            TranslationUtils.sendTranslation(source, "commands.whitelist.removed", "{playerName}", playerName);
         });
     }
 
     public void getWhitelistInfo(CommandSource source) {
         DatabaseAPI.<WhitelistModel>getAll("whitelist").thenAccept(allWhitelisted -> {
             if (allWhitelisted.isEmpty()) {
-                TranslationUtils.sendTranslation(source, "commands.whitelist.info.no_players");
+                TranslationUtils.sendTranslation(source, "commands.whitelist.info.empty_whitelist");
                 return;
             }
 
@@ -70,8 +70,8 @@ public class WhitelistManager {
                 Component entry = TranslationUtils.getComponentTranslation(
                         (Player) (source instanceof Player ? source : null),
                         "commands.whitelist.info.entry",
-                        "{player}", displayName,
-                        "{whitelistAt}", whitelistAt
+                        "{playerName}", displayName,
+                        "{timestamp}", whitelistAt
                 );
                 messageBlock.add(entry);
             }

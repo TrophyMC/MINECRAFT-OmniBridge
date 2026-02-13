@@ -26,7 +26,7 @@ public class ConnectionListener {
 
                         if (active) {
                             if (!hasMaintBypass && !isWhitelisted) {
-                                Component msg = TranslationUtils.getComponentTranslation(player, "commands.maintenance.kick_message");
+                                Component msg = TranslationUtils.getComponentTranslation(player, "commands.maintenance.kick.message");
                                 event.setResult(ResultedEvent.ComponentResult.denied(msg));
                             }
                         }

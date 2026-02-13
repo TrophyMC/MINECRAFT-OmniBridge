@@ -42,7 +42,7 @@ public class AntiBotListener {
                     manager.addVerified(ipAddress);
                     continuation.resume();
                 } else {
-                    var msg = TranslationUtils.getComponentTranslation(player, "antibot.attack_detected");
+                    var msg = TranslationUtils.getComponentTranslation(player, "listeners.antibot");
                     event.setResult(LoginEvent.ComponentResult.denied(msg));
                     continuation.resume();
                 }

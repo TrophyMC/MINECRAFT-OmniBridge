@@ -24,12 +24,12 @@ public class WhitelistCommand implements SimpleCommand {
         String[] args = invocation.arguments();
 
         if (!GeneralUtils.isPlayer(source)) {
-            TranslationUtils.sendTranslation(source, "commands.whitelist.only_players");
+            TranslationUtils.sendTranslation(source, "commands.only_players");
             return;
         }
 
         if (!source.hasPermission("omni.whitelist")) {
-            TranslationUtils.sendTranslation(source, "commands.whitelist.no_permission");
+            TranslationUtils.sendTranslation(source, "commands.no_permission");
             return;
         }
 
@@ -72,7 +72,7 @@ public class WhitelistCommand implements SimpleCommand {
         String playerName = args[1];
         GeneralUtils.getOfflinePlayerID(playerName).thenAccept(playerUUID -> {
             if (playerUUID == null) {
-                TranslationUtils.sendTranslation(source, "commands.whitelist.player_not_found", "{player}", playerName);
+                TranslationUtils.sendTranslation(source, "commands.player_not_found", "{player}", playerName);
                 return;
             }
 
